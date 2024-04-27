@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Movement</title>
+    <style>
+        body {
+            background-image: url('./assets/background.jpg');
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        #logo {
+            position: absolute;
+            cursor: pointer;
+            width: 5vw;
+            transition: transform 1s ease; /* Shorter transition duration for smoother movement */
+        }
+    </style>
+</head>
+
+<body>
+    <img id="logo" src="./assets/logo.png" alt="Logo">
+
+    <script>
+        const logo = document.getElementById('logo');
+        const logoWidth = logo.offsetWidth;
+        const logoHeight = logo.offsetHeight;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        // Function to move the logo towards cursor with smooth medium speed and rotate horizontally towards cursor
+        function moveLogo(event) {
+            const cursorX = event.pageX;
+            const cursorY = event.pageY;
+            const steps = 10; // Number of steps for smoother movement
+
+            // Calculate step sizes
+            const stepX = (cursorX - (logo.offsetLeft + logoWidth / 2)) / steps;
+            const stepY = (cursorY - (logo.offsetTop + logoHeight / 2)) / steps;
+
+            // Smoothly update logo position
+            let newX = logo.offsetLeft + (stepX * steps);
+            let newY = logo.offsetTop + (stepY * steps);
+
+            // Ensure logo remains within the screen boundaries
+            newX = Math.max(0, Math.min(screenWidth - logoWidth, newX));
+            newY = Math.max(0, Math.min(screenHeight - logoHeight, newY));
+
+            // Set logo position
+            logo.style.transform = `translate(${newX}px, ${newY}px)`;
+
+            // Calculate angle between logo's initial position and cursor position
+            const logoX = newX + (logoWidth / 2);
+            const logoY = newY + (logoHeight / 2);
+            const angle = Math.atan2(cursorY - logoY, cursorX - logoX);
+
+            // Rotate the logo horizontally towards cursor
+            const rotation = (angle * 90) / Math.PI; // Convert radians to degrees
+
+            // Determine the direction of movement and adjust rotation accordingly
+            if (stepX > 0) {
+                logo.style.transform += ` rotateY(${rotation}deg)`;
+            } else {
+                logo.style.transform += ` rotateY(${rotation + 90}deg)`;
+            }
+        }
+
+        // Add click event listener to move logo towards cursor and rotate horizontally towards cursor
+        document.addEventListener('click', moveLogo);
+    </script>
+</body>
+
+</html>
